@@ -1,0 +1,135 @@
+-- explore the data
+SELECT *
+FROM online_retail;
+--a total of 1625727 rows
+
+-- how many customers in this table
+SELECT DISTINCT ("CustomerID"), "Country"
+FROM online_retail
+GROUP BY "Country", "CustomerID"
+LIMIT 25;
+-- output
+"CustomerID"	"Country"
+14964	"United Kingdom"
+13136	"United Kingdom"
+17800	"United Kingdom"
+12906	"United Kingdom"
+17536	"United Kingdom"
+15691	"United Kingdom"
+14385	"United Kingdom"
+17133	"United Kingdom"
+13726	"United Kingdom"
+17444	"Canada"
+14019	"United Kingdom"
+14572	"United Kingdom"
+16019	"United Kingdom"
+16510	"United Kingdom"
+13651	"United Kingdom"
+13750	"United Kingdom"
+17351	"United Kingdom"
+14597	"United Kingdom"
+14066	"United Kingdom"
+12868	"United Kingdom"
+15809	"United Kingdom"
+14854	"United Kingdom"
+12963	"United Kingdom"
+16768	"United Kingdom"
+14346	"United Kingdom"
+--there were 4389 unique 'customerids'
+
+--how many items based on stock code
+SELECT DISTINCT ("StockCode"), "UnitPrice", "Description"
+FROM online_retail
+GROUP BY "UnitPrice", "StockCode", "Description"
+ORDER BY "StockCode"
+LIMIT 10;
+--output
+"StockCode"	"UnitPrice"	"Description"
+"10002"	0	
+"10002"	0.85	"INFLATABLE POLITICAL GLOBE "
+"10002"	1.63	"INFLATABLE POLITICAL GLOBE "
+"10002"	1.66	"INFLATABLE POLITICAL GLOBE "
+"10080"	0	"check"
+"10080"	0	
+"10080"	0.39	"GROOVY CACTUS INFLATABLE"
+"10080"	0.85	"GROOVY CACTUS INFLATABLE"
+"10120"	0.21	"DOGGY RUBBER"
+"10123C"	0	
+--there 18053 unique 'stockcodes'
+
+--how many items have no description
+SELECT DISTINCT ("StockCode"), "UnitPrice", "Description"
+FROM online_retail
+WHERE "Description" IS NULL
+GROUP BY "UnitPrice", "StockCode", "Description"
+ORDER BY "StockCode";
+--960 were null and conseqently had a price of 0 as well but those same 'stockcodes' were used several times all with different price points but same description
+
+--how many different descriptions for the 0 or less price point
+SELECT DISTINCT("UnitPrice"), "Description", "StockCode"
+FROM online_retail
+WHERE "UnitPrice" <= 0 
+GROUP BY "StockCode", "UnitPrice", "Description";
+--1771 total
+
+--how many different descriptions
+SELECT COUNT(DISTINCT "Description")
+FROM
+	(--how many different descriptions for the 0 or less price point
+	SELECT DISTINCT("UnitPrice"), "Description", "StockCode"
+	FROM online_retail
+	WHERE "UnitPrice" <= 0 
+	GROUP BY "StockCode", "UnitPrice", "Description") AS returned_items;
+--377 DISTINCT desriptions of the 1771 rows
+
+--order total by customer
+SELECT "CustomerID", SUM("Quantity" * "UnitPrice") AS order_total
+FROM online_retail
+GROUP BY "CustomerID";
+--4373 rows of data
+
+--highest and lowest order_total
+SELECT MIN(order_total), MAX(order_total)
+FROM(
+	--order total by customer
+	SELECT "CustomerID", SUM("Quantity" * "UnitPrice") AS order_total
+	FROM online_retail
+	GROUP BY "CustomerID"
+) AS hi_lo;
+
+"min"	"max"
+-12862.89	4343046.36
+
+--best selling product
+SELECT DISTINCT("StockCode"), "Quantity"
+FROM online_retail
+GROUP BY "StockCode", "Quantity"
+ORDER BY "Quantity" DESC
+LIMIT 25;
+--output
+"StockCode"	"Quantity"
+"23843"	80995
+"23166"	74215
+"84826"	12540
+"37413"	5568
+"84077"	4800
+"22197"	4300
+"85123A"	4000
+"22053"	3906
+"18007"	3186
+"21108"	3114
+"23343"	3100
+"16014"	3000
+"84988"	3000
+"84077"	2880
+"84879"	2880
+"21977"	2700
+"84077"	2592
+"79063D"	2560
+"18007"	2400
+"22693"	2400
+"23084"	2400
+"21967"	2160
+"21915"	2100
+"23084"	2040
+"16014"	2000
