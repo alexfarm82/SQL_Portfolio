@@ -1,0 +1,56 @@
+CREATE DATABASE LibrarySys
+
+CREATE TABLE Books (
+    BookID INT PRIMARY KEY,
+    Title VARCHAR(255),
+	AuthorName VARCHAR(255),
+    AuthorID INT,
+    ISBN VARCHAR(20) UNIQUE,
+	Genre VARCHAR(50),
+	Quantity INT,
+	PublishedDate DATE,
+    Price DECIMAL(10, 2),
+    CONSTRAINT FK_Author_Books FOREIGN KEY (AuthorID) REFERENCES Authors(AuthorID)
+);
+
+CREATE TABLE Authors (
+    AuthorID INT PRIMARY KEY,
+    FirstName VARCHAR(50),
+    LastName VARCHAR(50),
+	BirthDate DATE,
+    Nationality VARCHAR(50)
+);
+
+CREATE TABLE Borrowers (
+    BorrowerID INT PRIMARY KEY,
+    FirstName VARCHAR(50),
+    LastName VARCHAR(50),
+	Email VARCHAR(100)
+);
+
+CREATE TABLE Transactions (
+    TransactionID INT PRIMARY KEY,
+    BookID INT FOREIGN KEY (Books) REFERENCES Books(BookID),
+    BorrowerID INT FOREIGN KEY (Borrower) REFERENCES Borrower(BorrowerID),
+    CheckoutDate DATETIME,
+    ReturnDate DATETIME,
+	CurrentStatus VARCHAR(55)
+);
+
+CREATE TABLE Loans (
+	LoanID INT,
+	BookID INT,
+	BookTitle VARCHAR(255) FOREIGN KEY (Books) REFERENCES Books(Title),
+	LocationID INT FOREIGN KEY (Locations) REFERENCES Locations(LocationID),
+	LocationName VARCHAR(255) FOREIGN KEY (Locations) REFERENCES Locations(LocationName),
+	LoanDate DATETIME,
+	ReturnDate DATETIME
+);
+
+CREATE TABLE Locations (
+	LocationID INT PRIMARY KEY,
+	LocationName VARCHAR(255),
+	LocationAddress VARCHAR(255),
+	LocationCity VARCHAR(255),
+	LocationContact VARCHAR(255) --contact information and/or person
+);
